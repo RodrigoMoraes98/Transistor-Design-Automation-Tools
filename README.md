@@ -1,7 +1,9 @@
 # Transistor-Design-Automation-Tools
 
 - Note that this project is under development.
+
 ##############################################
+
 To run the design automation tools, it is required to have Python installed, as well as some modules, such as:
 - NumPy
 - Pandas
@@ -22,4 +24,5 @@ With all the requirements installed, there are some changes that needs to be mad
   - #load("file_directory/CIWmenu.il")#
  
 The terminal will print "t" if the process was done correctly. A menu will appear with the name "GAMA Tools", on which the softwares can be accessed.
+
 ##############################################
