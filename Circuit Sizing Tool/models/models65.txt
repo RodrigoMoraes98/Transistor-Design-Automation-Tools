@@ -1,0 +1,4 @@
+model      Lmin  Lmax			Wmin	Wmax
+nch        0.13  20.0           0.12    900      1e-6   
+pch        0.13  20.0           0.12    900      1e-6   
+

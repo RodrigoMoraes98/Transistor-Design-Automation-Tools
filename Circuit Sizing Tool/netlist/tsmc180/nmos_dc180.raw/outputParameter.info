@@ -1,0 +1,106 @@
+HEADER
+"PSFversion" "1.00"
+"simulator" "spectre"
+"version" "18.1.0.077"
+"date" "2:00:15 PM, Mon May 15, 2023"
+"design" "// Generated for: spectre"
+"analysis type" "info"
+"analysis name" "outputParameter"
+"analysis description" "Circuit Information"
+"xVecSorted" "unknown"
+"tolerance.relative" 0.00100000
+"ReferenceTemperature.Value" 27.0000
+"ReferenceTemperature.Units" "C"
+TYPE
+"bsim4~instparams" STRUCT(
+"tempeff" FLOAT DOUBLE PROP(
+"units" "C"
+"description" "Effective temperature for a single device"
+)
+"meff" FLOAT DOUBLE PROP(
+"description" "Effective multiplicity factor (m-factor)"
+)
+"weff" FLOAT DOUBLE PROP(
+"units" "m"
+"description" "Effective channel width (alias=lx62)"
+)
+"leff" FLOAT DOUBLE PROP(
+"units" "m"
+"description" "Effective channel length (alias=lx63)"
+)
+"weffcv" FLOAT DOUBLE PROP(
+"units" "m"
+"description" "Effective channel width for CV (alias=lx64)"
+)
+"leffcv" FLOAT DOUBLE PROP(
+"units" "m"
+"description" "Effective channel length for CV (alias=lx65)"
+)
+"vfbsd" FLOAT DOUBLE PROP(
+"units" "V"
+"description" "Flat band Voltage between the gate and Drain/source diffusions (alias=lx75)"
+)
+"rgbi" FLOAT DOUBLE PROP(
+"units" "Ohm"
+"description" "Gate bias-independent resistance"
+)
+"adeff" FLOAT DOUBLE PROP(
+"units" "m^2"
+"description" "Effective drain area"
+)
+"aseff" FLOAT DOUBLE PROP(
+"units" "m^2"
+"description" "Effective source area"
+)
+"pdeff" FLOAT DOUBLE PROP(
+"units" "m"
+"description" "Effective drain perimeter"
+)
+"pseff" FLOAT DOUBLE PROP(
+"units" "m"
+"description" "Effective source perimeter"
+)
+) PROP(
+"key" "inst"
+)
+"vsource~instparams" STRUCT(
+"tempeff" FLOAT DOUBLE PROP(
+"units" "C"
+"description" "Effective temperature for a single device"
+)
+) PROP(
+"key" "inst"
+)
+VALUE
+"M0" "bsim4~instparams" (
+2.700000000000000e+01
+1.000000000000000e+00
+7.360367085029729e-05
+1.773087777777778e-05
+7.362407085029729e-05
+1.773013068377778e-05
+-2.706906000123373e-03
+0.000000000000000e+00
+3.533955400814270e-11
+3.533955400814270e-11
+7.458407085029728e-05
+7.458407085029728e-05
+) PROP(
+"model" "nch.1"
+)
+"VGS" "vsource~instparams" (
+2.700000000000000e+01
+) PROP(
+"model" "vsource"
+)
+"VDS" "vsource~instparams" (
+2.700000000000000e+01
+) PROP(
+"model" "vsource"
+)
+"VBS" "vsource~instparams" (
+2.700000000000000e+01
+) PROP(
+"model" "vsource"
+)
+END

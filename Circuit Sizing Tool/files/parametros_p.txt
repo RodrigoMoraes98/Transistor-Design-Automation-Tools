@@ -1,0 +1,3 @@
+//parametros da simulacao
+simulator lang=spectre
+parameters L=2e-07 M=1.0 NF=1.0 W=2.5163269312177606e-06 VBS=0.0 VGS=0.4 VDS=0.4

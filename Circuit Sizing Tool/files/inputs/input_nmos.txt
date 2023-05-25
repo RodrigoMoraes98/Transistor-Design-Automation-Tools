@@ -1,0 +1,16 @@
+target_name=gm
+target_value=1e-05
+max_error=0.01
+parameter_calc_name=W
+nit=30
+Lmin=1.3e-07
+Lmax=1.9999999999999998e-05
+Wmin=1.2e-07
+Wmax=0.0009
+L=2e-07
+M=1.0
+NF=1.0
+W=1e-06
+VBS=0.0
+VGS=0.4
+VDS=0.4
