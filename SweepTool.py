@@ -6,6 +6,7 @@ sys.path.append(str(home_directory) + '/Circuit Sizing Tool/files')
 
 import sweep
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -79,7 +80,7 @@ class Ui_MainWindow(object):
         self.tb_simResults.setAlternatingRowColors(True)
         self.tb_simResults.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectColumns)
         self.tb_simResults.setObjectName("tb_simResults")
-        self.tb_simResults.setColumnCount(11)
+        self.tb_simResults.setColumnCount(14)
         self.tb_simResults.setRowCount(6)
         item = QtWidgets.QTableWidgetItem()
         self.tb_simResults.setVerticalHeaderItem(0, item)
@@ -115,6 +116,12 @@ class Ui_MainWindow(object):
         self.tb_simResults.setHorizontalHeaderItem(9, item)
         item = QtWidgets.QTableWidgetItem()
         self.tb_simResults.setHorizontalHeaderItem(10, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tb_simResults.setHorizontalHeaderItem(11, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tb_simResults.setHorizontalHeaderItem(12, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tb_simResults.setHorizontalHeaderItem(13, item)
         self.tb_simResults.horizontalHeader().setDefaultSectionSize(80)
         self.tb_simResults.horizontalHeader().setMinimumSectionSize(25)
         self.gridLayout.addWidget(self.tb_simResults, 1, 1, 1, 3)
@@ -291,11 +298,56 @@ class Ui_MainWindow(object):
             self.cb_tranModel.setItemText(7, QtCore.QCoreApplication.translate("MainWindow", "nanch"))
             self.cb_tranModel.addItem("")
             self.cb_tranModel.setItemText(8, QtCore.QCoreApplication.translate("MainWindow", "nanch3"))
+        
+        self.count = 0
+        self.gm_id = []
+        self.gm_gds = []
+        self.gmb_gm = []
+        self.gmb_gds = []
+
 
         self.cb_plotSelectAxis.clicked.connect(self.select_plot)
         self.btn_sweep.clicked.connect(self.sweep_pressed)
-        #self.tb_parameters.cellClicked.connect(self.pressed)
+        self.tb_simResults.cellClicked.connect(self.select_column)
+        self.pushButton.clicked.connect(self.plot)
         ###################################################
+
+    def plot(self):
+        particular_cases = ['gm/id', 'gm/gds', 'gmb/gm', 'gmb/gds']
+        particular_cases_lists = [self.gm_id, self.gm_gds, self.gmb_gm, self.gmb_gds]
+
+        x = self.lb_XaxisName.text()
+        y = self.lb_YaxisName.text()
+        plt.xlabel(x)
+        plt.ylabel(y)
+        data = pd.read_csv(str(home_directory) + '/Circuit Sizing Tool/files/outputs/out_sweep.csv')
+        
+        if x and y not in particular_cases:
+            plt.plot(data[x], data[y])
+        elif x in particular_cases and y not in particular_cases:
+            index_x = particular_cases.index(x)
+            plt.plot(particular_cases_lists[index_x], data[y])
+        elif y in particular_cases and x not in particular_cases:
+            index_y = particular_cases.index(y)
+            plt.plot(data[x], particular_cases_lists[index_y])
+        elif x and y in particular_cases:
+            index_x = particular_cases.index(x)
+            index_y = particular_cases.index(y)
+            print(particular_cases_lists[index_x])
+            plt.plot(particular_cases_lists[index_x], particular_cases_lists[index_y])
+
+        plt.show()
+
+    def select_column(self):
+        columns = ['Sweep Parameter', 'Objective', 'Variable', 'ids ', 'gm ', 'gds ', 'cgd ', 'cgs ', 'cdb ', 'cds ', 'gm/id', 'gm/gds', 'gmb/gm', 'gmb/gds']
+        if self.lb_Xaxis.isEnabled() == True:
+            if self.count % 2 == 0:
+                self.lb_XaxisName.setText(str(columns[self.tb_simResults.currentColumn()]))
+                self.count += 1
+            else:
+                self.lb_YaxisName.setText(str(columns[self.tb_simResults.currentColumn()]))
+                self.count += 1
+        self.pushButton.setEnabled(True)
 
     def select_plot(self):
         dlg = QMessageBox()
@@ -336,15 +388,67 @@ class Ui_MainWindow(object):
 
             self.tb_simResults.setEnabled(True)
             self.cb_plotSelectAxis.setEnabled(True)
-            self.pushButton.setEnabled(True)
 
-            resultsData = pd.read_csv(str(home_directory) + '/Circuit Sizing Tool/files/outputs/out_sweep.csv')
-            self.tb_simResults.setRowCount(resultsData.shape[0])
-            self.tb_simResults.setColumnCount(resultsData.shape[1])
+            data = pd.read_csv(str(home_directory) + '/Circuit Sizing Tool/files/outputs/out_sweep.csv')
+            self.tb_simResults.setRowCount(data.shape[0])
+            for column in data.columns:
+                if column.strip(' ').lower() == 'sweep parameter':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['Sweep Parameter'][i]))
+                        self.tb_simResults.setItem(i, 0, item)
+                if column.strip(' ').lower() == 'objective':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['Objective'][i]))
+                        self.tb_simResults.setItem(i, 1, item)
+                if column.strip(' ').lower() == 'variable':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['Variable'][i]))
+                        self.tb_simResults.setItem(i, 2, item)
+                if column.strip(' ').lower() == 'ids':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['ids '][i]))
+                        self.tb_simResults.setItem(i, 3, item)
+                if column.strip(' ').lower() == 'gm':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['gm '][i]))
+                        self.tb_simResults.setItem(i, 4, item)
+                if column.strip(' ').lower() == 'gds':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['gds '][i]))
+                        self.tb_simResults.setItem(i, 5, item)
+                if column.strip(' ').lower() == 'cgd':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['cgd '][i]))
+                        self.tb_simResults.setItem(i, 6, item)
+                if column.strip(' ').lower() == 'cgd':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['cgs '][i]))
+                        self.tb_simResults.setItem(i, 7, item)
+                if column.strip(' ').lower() == 'cdb':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['cdb '][i]))
+                        self.tb_simResults.setItem(i, 8, item)
+                if column.strip(' ').lower() == 'cds':
+                    for i in range(data.shape[0]):
+                        item = QtWidgets.QTableWidgetItem(str(data['cds '][i]))
+                        self.tb_simResults.setItem(i, 9, item)
 
-            for itemColumn in range(resultsData.shape[1]):
-                for itemLine in range(resultsData.shape[0]):
-                    self.tb_simResults.setItem(itemRow, itemColumn, resultsData[itemLine, itemColumn])
+            for i in range(data.shape[0]):
+                self.gm_id.append(float(data['gm '][i])/float(data['ids '][i]))
+                item = QtWidgets.QTableWidgetItem(str(self.gm_id[i]))
+                self.tb_simResults.setItem(i, 10, item)
+
+                self.gm_gds.append(float(data['gm '][i])/float(data['gds '][i]))
+                item = QtWidgets.QTableWidgetItem(str(self.gm_gds[i]))
+                self.tb_simResults.setItem(i, 11, item)
+
+                self.gmb_gm.append(float(data['gmbs '][i])/float(data['gm '][i]))
+                item = QtWidgets.QTableWidgetItem(str(self.gmb_gm[i]))
+                self.tb_simResults.setItem(i, 12, item)
+
+                self.gmb_gds.append(float(data['gmbs '][i])/float(data['gds '][i]))
+                item = QtWidgets.QTableWidgetItem(str(self.gmb_gds[i]))
+                self.tb_simResults.setItem(i, 13, item)
 
         except:
             error_dialog = QtWidgets.QErrorMessage()
@@ -403,27 +507,33 @@ class Ui_MainWindow(object):
         item = self.tb_simResults.verticalHeaderItem(5)
         item.setText(_translate("MainWindow", "6"))
         item = self.tb_simResults.horizontalHeaderItem(0)
-        item.setText(_translate("MainWindow", "W"))
+        item.setText(_translate("MainWindow", "Sweep Parameter"))
         item = self.tb_simResults.horizontalHeaderItem(1)
-        item.setText(_translate("MainWindow", "L"))
+        item.setText(_translate("MainWindow", "Objective"))
         item = self.tb_simResults.horizontalHeaderItem(2)
-        item.setText(_translate("MainWindow", "ids"))
+        item.setText(_translate("MainWindow", "Variable"))
         item = self.tb_simResults.horizontalHeaderItem(3)
-        item.setText(_translate("MainWindow", "gm"))
+        item.setText(_translate("MainWindow", "ids"))
         item = self.tb_simResults.horizontalHeaderItem(4)
-        item.setText(_translate("MainWindow", "gds"))
+        item.setText(_translate("MainWindow", "gm"))
         item = self.tb_simResults.horizontalHeaderItem(5)
-        item.setText(_translate("MainWindow", "cgd"))
+        item.setText(_translate("MainWindow", "gds"))
         item = self.tb_simResults.horizontalHeaderItem(6)
-        item.setText(_translate("MainWindow", "cgs"))
+        item.setText(_translate("MainWindow", "cgd"))
         item = self.tb_simResults.horizontalHeaderItem(7)
-        item.setText(_translate("MainWindow", "cdb"))
+        item.setText(_translate("MainWindow", "cgs"))
         item = self.tb_simResults.horizontalHeaderItem(8)
-        item.setText(_translate("MainWindow", "gm/Id"))
+        item.setText(_translate("MainWindow", "cdb"))
         item = self.tb_simResults.horizontalHeaderItem(9)
-        item.setText(_translate("MainWindow", "gm/gds"))
+        item.setText(_translate("MainWindow", "cds"))
         item = self.tb_simResults.horizontalHeaderItem(10)
+        item.setText(_translate("MainWindow", "gm/Id"))
+        item = self.tb_simResults.horizontalHeaderItem(11)
+        item.setText(_translate("MainWindow", "gm/gds"))
+        item = self.tb_simResults.horizontalHeaderItem(12)
         item.setText(_translate("MainWindow", "gmb/gm"))
+        item = self.tb_simResults.horizontalHeaderItem(13)
+        item.setText(_translate("MainWindow", "gmb/gds"))
         self.gb_tranConfig.setTitle(_translate("MainWindow", "Transistor Config"))
         self.rb_180nm.setText(_translate("MainWindow", "180 nm"))
         self.rb_65nm.setText(_translate("MainWindow", "65 nm"))
